@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://ka8u2qp71805"]
+
+[ext_resource type="PackedScene" uid="uid://rdaagd01p35o" path="res://deck.tscn" id="1_vdhe0"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(577, 323)
+scale = Vector2(2, 2)
+
+[node name="Deck" parent="." instance=ExtResource("1_vdhe0")]
+position = Vector2(64, 577)

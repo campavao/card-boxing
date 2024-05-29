@@ -1,0 +1,107 @@
+[gd_scene load_steps=5 format=3 uid="uid://ctgdpr6jj43nl"]
+
+[ext_resource type="Script" path="res://cardzone.gd" id="1_iptlq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_btaoa"]
+size = Vector2(40, 58)
+
+[sub_resource type="Theme" id="Theme_awnrc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ve4oo"]
+
+[node name="CardZone" type="Area2D"]
+scale = Vector2(0.9, 0.9)
+collision_layer = 258
+script = ExtResource("1_iptlq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_btaoa")
+
+[node name="DebugBorder" type="Node2D" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="DebugBorder"]
+offset_left = -20.0
+offset_top = -29.0
+offset_right = -18.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(0, 1, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="DebugBorder"]
+offset_left = 18.0
+offset_top = -29.0
+offset_right = 20.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(0, 1, 0, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="DebugBorder"]
+offset_left = -20.0
+offset_top = -29.0
+offset_right = 20.0
+offset_bottom = -27.0
+theme = SubResource("Theme_awnrc")
+color = Color(0, 1, 0, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="DebugBorder"]
+offset_left = -20.0
+offset_top = 27.0
+offset_right = 20.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(0, 1, 0, 1)
+
+[node name="Label" type="Label" parent="DebugBorder"]
+offset_left = -16.6667
+offset_top = -26.6667
+offset_right = -6.66667
+offset_bottom = -3.66667
+text = "1"
+
+[node name="Border" type="Node2D" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="Border"]
+offset_left = -20.0
+offset_top = -29.0
+offset_right = -18.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(1, 1, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="Border"]
+offset_left = 18.0
+offset_top = -29.0
+offset_right = 20.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(1, 1, 0, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="Border"]
+offset_left = -20.0
+offset_top = -29.0
+offset_right = 20.0
+offset_bottom = -27.0
+theme = SubResource("Theme_awnrc")
+color = Color(1, 1, 0, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="Border"]
+offset_left = -20.0
+offset_top = 27.0
+offset_right = 20.0
+offset_bottom = 29.0
+theme = SubResource("Theme_awnrc")
+color = Color(1, 1, 0, 1)
+
+[node name="OverlapZone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OverlapZone"]
+shape = SubResource("CircleShape2D_ve4oo")
+disabled = true
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
+[connection signal="area_entered" from="OverlapZone" to="." method="_on_overlap_zone_area_entered"]

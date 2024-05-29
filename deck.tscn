@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://rdaagd01p35o"]
+
+[ext_resource type="Script" path="res://deck.gd" id="1_5g5jo"]
+[ext_resource type="Texture2D" uid="uid://bavp18ewuwhht" path="res://cardsLarge_tilemap.png" id="1_jluuj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgr45"]
+size = Vector2(40, 58)
+
+[node name="Deck" type="Area2D"]
+script = ExtResource("1_5g5jo")
+
+[node name="Face" type="Sprite2D" parent="."]
+texture = ExtResource("1_jluuj")
+region_enabled = true
+region_rect = Rect2(857, 68, 40, 58)
+
+[node name="TopCard" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sgr45")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://ka8u2qp71805"]
+
+[ext_resource type="PackedScene" uid="uid://rdaagd01p35o" path="res://deck.tscn" id="1_vdhe0"]
+[ext_resource type="Script" path="res://MouseCamera.gd" id="2_ss2sv"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(577, 323)
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+position_smoothing_speed = 1.0
+script = ExtResource("2_ss2sv")
+
+[node name="FirstSpot" type="Marker2D" parent="."]
+position = Vector2(577, 323)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Deck" parent="UI" node_paths=PackedStringArray("default_spot") instance=ExtResource("1_vdhe0")]
+position = Vector2(78, 571)
+default_spot = NodePath("../../FirstSpot")
