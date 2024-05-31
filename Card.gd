@@ -66,7 +66,7 @@ func _process(_delta):
 
 
 func follow_mouse():
-	position = get_global_mouse_position()
+	global_position = get_global_mouse_position()
 
 var placement_area: Array[Area2D] = []
 

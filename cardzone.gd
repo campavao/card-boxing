@@ -90,7 +90,7 @@ func _on_overlap_zone_area_entered(area):
 	if area is CardZone and area != self and area.parent.is_placed:
 		print('other area found')
 		area.other_parents.append(parent)
-		if other_parents.size() > 0:
+		if other_parents.size() > 0 and area.other_parents:
 			area.other_parents.append_all(other_parents)
 			
 		queue_free()
