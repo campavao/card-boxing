@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6p2j7n1ygt3d"]
+
+[ext_resource type="PackedScene" uid="uid://bww4fs7y86cxi" path="res://squarezone.tscn" id="1_3tnph"]
+[ext_resource type="Script" path="res://square.gd" id="1_tg5y5"]
+
+[node name="Square" type="Node2D"]
+script = ExtResource("1_tg5y5")
+
+[node name="SquareZone" parent="." instance=ExtResource("1_3tnph")]
+position = Vector2(20, 29)
+scale = Vector2(1, 1)
+is_filled = false
+zone = 1
+
+[node name="SquareZone2" parent="." instance=ExtResource("1_3tnph")]
+position = Vector2(29, 79)
+rotation = 1.5708
+scale = Vector2(1, 1)
+is_filled = false
+zone = 3
+
+[node name="SquareZone3" parent="." instance=ExtResource("1_3tnph")]
+position = Vector2(79, 70)
+scale = Vector2(1, 1)
+is_filled = false
+zone = 2
+
+[node name="SquareZone4" parent="." instance=ExtResource("1_3tnph")]
+position = Vector2(70, 20)
+rotation = 1.5708
+scale = Vector2(1, 1)
+is_filled = false
+zone = 4

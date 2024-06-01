@@ -3,18 +3,17 @@ class_name CardZone
 
 const Directions = Global.Directions
 
-
 @export var is_base := false
 @export var is_disabled := false
 @export var zone_placement: Directions = Directions.North
 
 var parent: Card
-var other_parents: Array[Card]
+var other_parents: Array[Card] = []
 
 var hide_border = is_base or is_disabled
 
 var is_match = false
-var prev_active_card = null
+var prev_active_card_details = null
 
 func _ready():
 	$Border.hide()
@@ -32,51 +31,40 @@ func _process(_delta):
 	if hide_border:
 		$Border.hide()
 		
-	if prev_active_card == null and Global.active_card != null:
+	if prev_active_card_details == null and Global.active_card_details != null:
 		is_valid()
 		
-	var is_prev_available = prev_active_card != null
-	var is_global_available = Global.active_card != null
+	var is_prev_available = prev_active_card_details != null
+	var is_global_available = Global.active_card_details != null
 	var is_prev_and_current_available = is_prev_available and is_global_available
 	
 	if is_prev_and_current_available:
-		var is_number_match = prev_active_card.number != Global.active_card.number
-		var is_suit_match = prev_active_card.suit != Global.active_card.suit
+		var is_number_match = prev_active_card_details.number != Global.active_card_details.number
+		var is_suit_match = prev_active_card_details.suit != Global.active_card_details.suit
 		
 		if is_number_match or is_suit_match:
 			is_valid()
 	
 	$DebugBorder/Label.text = str(1 + other_parents.size())
 
-func _on_area_entered(area):
-	var valid_card = is_card(area)
-
-	if valid_card and !area.parent.is_placed:
-		var possible_parent = area.get_parent().get_parent()
-		
-		if possible_parent is Card and possible_parent.selected:		
-			if 'is_placed' in area and area.is_placed:
-				return
-				
-			if hide_border or area == get_parent().find_child('BaseZone'):
-				return
-			
-			if is_match:
-				$Border.show()
 	
+func highlight():
+	var card = Global.active_card
 
-
-func _on_area_exited(area):
-	var valid_card = is_card(area)
-	if valid_card:	
-		$Border.hide()
+	if card and !card.is_placed:
+		if hide_border:
+			return
+		
+		if is_match:
+			Events.emit_signal("add_placement_area", self)
+			$Border.show()
 
 func is_card(area):
 	return area is CardZone and area.is_base
 	
 func is_valid():
-	prev_active_card = Global.active_card
-	var this_matches = Global.active_card != null and is_parent_valid(parent)
+	prev_active_card_details = Global.active_card_details
+	var this_matches = Global.active_card_details != null and is_parent_valid(parent)
 	if this_matches and other_parents.size() > 0:
 		var others_match = other_parents.all(is_parent_valid)
 		is_match = this_matches and others_match
@@ -84,13 +72,21 @@ func is_valid():
 		is_match = this_matches
 
 func is_parent_valid(parent_to_check):
-	return Global.active_card.number == parent_to_check.number or Global.active_card.suit == parent_to_check.suit
+	return Global.active_card_details.number == parent_to_check.number or Global.active_card_details.suit == parent_to_check.suit
 
 func _on_overlap_zone_area_entered(area):
 	if area is CardZone and area != self and area.parent.is_placed:
 		print('other area found')
 		area.other_parents.append(parent)
-		if other_parents.size() > 0 and area.other_parents:
-			area.other_parents.append_all(other_parents)
+		if other_parents.size() > 0 and area.other_parents.size() > 0:
+			area.other_parents.append_array(other_parents)
 			
 		queue_free()
+
+
+func _on_mouse_entered():
+	highlight()
+
+func _on_mouse_exited():
+	Events.emit_signal("remove_placement_area", self)
+	$Border.hide()

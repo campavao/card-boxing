@@ -2,10 +2,12 @@ extends Node2D
 class_name Card
 
 @onready var Face := $Face
-@onready var Zone1 := %CardZone1
-@onready var Zone2 := %CardZone2
-@onready var Zone3 := %CardZone3
-@onready var Zone4 := %CardZone4
+@onready var Zone1 := $Zones/CardZone1
+@onready var Zone2 := $Zones/CardZone2
+@onready var Zone3 := $Zones/CardZone3
+@onready var Zone4 := $Zones/CardZone4
+
+var table
 
 @onready var ZONES: Array[CardZone] = [Zone1, Zone2, Zone3, Zone4]
 
@@ -15,18 +17,25 @@ var is_placed = false
 @export var number: Global.Numbers
 @export var suit: Global.Suits
 
+signal remove_card(card: Card)
+
+var connected: Array[Card]
+
+var previous_location: Vector2
+
 const BASE_NUMBER_OFFSET = 12
 const BASE_SUIT_OFFSET = 3
 const WIDTH = 40
 const HEIGHT = 58
-
 const LAST_CARD_INDEX = 13
-
 const OFFSET_MODIFIER = 65
 
 func _ready():
 	update_face()
-		
+	table = get_tree().current_scene.find_child('Table')
+	Events.connect("add_placement_area", add_placement)
+	Events.connect("remove_placement_area", remove_placement)
+	
 func update_face():
 	if (number == Global.Numbers.Joker):
 		print('joker time')
@@ -54,16 +63,17 @@ var selected = false
 
 func _process(_delta):
 	if selected:
-		var active_card = Global.ActiveCard.new()
-		active_card.number = number
-		active_card.suit = suit
-		Global.active_card = active_card
+		var active_card_details = Global.CardDetails.new()
+		active_card_details.number = number
+		active_card_details.suit = suit
+		Global.active_card_details = active_card_details
 		
 		if !is_placed:
 			follow_mouse()
 		
-	adjust_zones(selected)
-
+	if is_placed and is_any_disabled():
+		enable_all()
+		
 
 func follow_mouse():
 	global_position = get_global_mouse_position()
@@ -77,28 +87,50 @@ func _on_base_zone_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		selected = event.pressed
 		
+		if selected:
+			Global.active_card = self
+			previous_location = global_position
+		else:
+			Global.active_card = null
+			global_position = previous_location
+		
 		if !event.pressed and placement_area.size() > 0:
 			place()
 
 
-func adjust_zones(disable: bool):
+func enable_all():
 	for zone in ZONES:
 		if is_instance_valid(zone):
-			zone.is_disabled = disable
+			zone.is_disabled = false
 	
+func is_any_disabled():
+	return ZONES.any(is_disabled)
+
+func is_disabled(zone):
+	return is_instance_valid(zone) and zone.is_disabled
 
 func place():
 	var first_area = placement_area[0]
 	var is_valid_placement = can_place()
 
 	if first_area and is_valid_placement:
+		reparent(table)
 		global_position = first_area.global_position
 		global_rotation = first_area.global_rotation
+		scale = Vector2(1, 1)
+		connected = [first_area.parent]
+		
 		var zone_to_delete = Global.DIRECTION_MAP[first_area.zone_placement]
 		delete_zone(zone_to_delete)
-		first_area.queue_free()
+		first_area.parent.delete_zone(first_area.zone_placement)
+		
 		is_placed = true
-		Global.is_active_card = false
+		Global.is_active_card_details = false
+		
+		first_area.queue_free()
+		emit_signal('remove_card', self)
+	else:
+		global_position = previous_location
 	
 func is_valid(area: CardZone):
 	return !area.is_base and area.is_match 
@@ -111,19 +143,18 @@ func print_card_details(area: CardZone):
 		"number": area.parent.number,
 		"suit": area.parent.suit
 	}
-
-func _on_base_zone_area_entered(area):
-	if area is CardZone and !area.is_base:
+	
+func add_placement(area: Area2D):
+	print('add placement')
+	if area is CardZone and !area.is_base and !area.is_disabled:
 		placement_area.append(area)
-		
-func _on_base_zone_area_exited(area):
-	if area is CardZone:
-		var index = placement_area.find(area)
-		if index != -1:
-			placement_area.remove_at(index)
-			
+
+func remove_placement(area: Area2D):
+	print('remove placement')
+	placement_area.erase(area)
+
 
 func delete_zone(zone_to_delete: Global.Directions):
 	for zone in ZONES:
-		if zone.zone_placement == zone_to_delete:
+		if is_instance_valid(zone_to_delete) and zone.zone_placement == zone_to_delete:
 			zone.queue_free()

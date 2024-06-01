@@ -6,7 +6,9 @@ var card_scene: PackedScene = preload("res://card.tscn")
 
 @onready var hand := $"../Hand"
 
-var deck: Array[Global.ActiveCard] = []
+@onready var table := $"../../Table"
+
+var deck: Array[Global.CardDetails] = []
 
 func _ready():
 	reset_deck()
@@ -16,28 +18,29 @@ func _ready():
 	
 
 func _on_input_event(_viewport, event, _shape_idx):
-	if !Global.is_active_card and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if !Global.is_active_card_details and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		place_card(false)
 
 func reset_deck():
 	for suit in Global.SUIT_INDEX:
 		for number in Global.NUMBER_INDEX:
-			var card = Global.ActiveCard.new()
+			var card = Global.CardDetails.new()
 			card.number = number
 			card.suit = suit
 			deck.append(card)
 
 func place_card(is_first_card: bool):
 	var next_card = deck.pick_random()
-	var new_card = card_scene.instantiate()
-	new_card.number = next_card.number
-	new_card.suit = next_card.suit
+	
 	if is_first_card:
-		default_spot.add_child(new_card)
+		var new_card = card_scene.instantiate()
+		new_card.number = next_card.number
+		new_card.suit = next_card.suit	
+		new_card.is_placed = true
+		new_card.global_position = default_spot.global_position
+		table.add_child(new_card)
 	else:
-		new_card.selected = true
-		#Global.is_active_card = true
-		get_parent().get_parent().add_child(new_card)
+		hand.push_card(next_card)
 	
 	var remove_card_index = deck.find(next_card)
 	deck.remove_at(remove_card_index)

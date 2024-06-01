@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://ctgdpr6jj43nl"]
+[gd_scene load_steps=5 format=3 uid="uid://bww4fs7y86cxi"]
 
-[ext_resource type="Script" path="res://cardzone.gd" id="1_iptlq"]
+[ext_resource type="Script" path="res://squarezone.gd" id="1_ru4qo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_btaoa"]
 size = Vector2(40, 58)
@@ -9,11 +9,13 @@ size = Vector2(40, 58)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ve4oo"]
 
-[node name="CardZone" type="Area2D"]
+[node name="SquareZone" type="Area2D"]
 scale = Vector2(0.9, 0.9)
 collision_layer = 258
-script = ExtResource("1_iptlq")
-is_disabled = true
+script = ExtResource("1_ru4qo")
+is_filled = null
+required_number = null
+required_suit = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_btaoa")
@@ -104,6 +106,4 @@ disabled = true
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
 [connection signal="area_entered" from="OverlapZone" to="." method="_on_overlap_zone_area_entered"]

@@ -22,28 +22,31 @@ scale = Vector2(0.5, 0.5)
 collision_layer = 1
 collision_mask = 2
 is_base = true
+is_disabled = false
+zone_placement = 0
 
 [node name="CardZone1" parent="Zones" instance=ExtResource("3_4uti3")]
-unique_name_in_owner = true
 position = Vector2(-9, 49)
 rotation = 1.5708
+is_base = false
 zone_placement = 1
 
 [node name="CardZone2" parent="Zones" instance=ExtResource("3_4uti3")]
-unique_name_in_owner = true
 position = Vector2(-49, -9)
 rotation = 1.5708
+is_base = false
 zone_placement = 3
 
 [node name="CardZone3" parent="Zones" instance=ExtResource("3_4uti3")]
-unique_name_in_owner = true
 position = Vector2(9, -49)
 rotation = 1.5708
+is_base = false
+zone_placement = 0
 
 [node name="CardZone4" parent="Zones" instance=ExtResource("3_4uti3")]
-unique_name_in_owner = true
 position = Vector2(49, 9)
 rotation = 1.5708
+is_base = false
 zone_placement = 2
 
 [connection signal="area_entered" from="Zones/BaseZone" to="." method="_on_base_zone_area_entered"]

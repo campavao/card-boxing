@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://ka8u2qp71805"]
+[gd_scene load_steps=4 format=3 uid="uid://ka8u2qp71805"]
 
 [ext_resource type="PackedScene" uid="uid://rdaagd01p35o" path="res://deck.tscn" id="1_vdhe0"]
-[ext_resource type="Script" path="res://UI.gd" id="2_d768r"]
 [ext_resource type="Script" path="res://MouseCamera.gd" id="2_ss2sv"]
 [ext_resource type="PackedScene" uid="uid://cicgkir7ms26o" path="res://hand.tscn" id="3_8ts7g"]
 
@@ -9,22 +8,20 @@
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(577, 323)
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 position_smoothing_speed = 1.0
 script = ExtResource("2_ss2sv")
 
-[node name="Table" type="Node2D" parent="."]
-
-[node name="FirstSpot" type="Marker2D" parent="Table"]
+[node name="FirstSpot" type="Marker2D" parent="."]
 position = Vector2(577, 323)
 
-[node name="UI" type="Node2D" parent="."]
-script = ExtResource("2_d768r")
+[node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Deck" parent="UI" node_paths=PackedStringArray("default_spot") instance=ExtResource("1_vdhe0")]
-position = Vector2(238, 485)
-default_spot = NodePath("../../Table/FirstSpot")
+position = Vector2(93, 398)
+scale = Vector2(2, 2)
+default_spot = NodePath("../../FirstSpot")
 
 [node name="Hand" parent="UI" instance=ExtResource("3_8ts7g")]
-position = Vector2(303, 485)
+position = Vector2(53, 576)

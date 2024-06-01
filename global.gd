@@ -63,12 +63,14 @@ const DIRECTION_MAP = {
 	Directions.West: Directions.North,
 }
 
-var is_active_card = false
+var is_active_card_details = false
 
-class ActiveCard:
+class CardDetails:
 	var number: Numbers
 	var suit: Suits
 
-var active_card: ActiveCard = null
+var active_card_details: CardDetails = null
+
+var active_card: Card = null
 
 const CARD_ZONE_COLLISION_LAYER = 9
