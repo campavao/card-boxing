@@ -18,7 +18,13 @@ func _ready():
 	
 
 func _on_input_event(_viewport, event, _shape_idx):
-	if !Global.is_active_card_details and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if (
+		!Global.is_active_card_details
+			and event is InputEventMouseButton
+			and event.button_index == MOUSE_BUTTON_LEFT
+			and event.pressed
+		):
+		
 		place_card(false)
 
 func reset_deck():

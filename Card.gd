@@ -145,12 +145,10 @@ func print_card_details(area: CardZone):
 	}
 	
 func add_placement(area: Area2D):
-	print('add placement')
 	if area is CardZone and !area.is_base and !area.is_disabled:
 		placement_area.append(area)
 
 func remove_placement(area: Area2D):
-	print('remove placement')
 	placement_area.erase(area)
 
 
