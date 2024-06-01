@@ -2,6 +2,7 @@ extends Node2D
 class_name Hand
 
 @onready var card_node: PackedScene = preload("res://card.tscn")
+@onready var player := $"../.."
 
 var cards: Array[Global.CardDetails] = []
 
@@ -27,6 +28,7 @@ func render_card(card: Global.CardDetails, start: float = 0):
 	addable_card.number = card.number
 	addable_card.suit = card.suit
 	addable_card.position.x = start
+	addable_card.player = player
 	addable_card.connect("remove_card", _on_remove_card)
 	%Path.add_child(addable_card)
 

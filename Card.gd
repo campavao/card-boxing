@@ -16,6 +16,7 @@ var is_placed = false
 # Ace to King
 @export var number: Global.Numbers
 @export var suit: Global.Suits
+@export var player: Player
 
 signal remove_card(card: Card)
 
@@ -61,8 +62,12 @@ func update_face():
 
 var selected = false
 
-func _process(_delta):
-	if selected:
+func _physics_process(delta):
+	if multiplayer.is_server():
+		move()
+		
+func move():
+	if player and player.is_selected:
 		var active_card_details = Global.CardDetails.new()
 		active_card_details.number = number
 		active_card_details.suit = suit
@@ -77,6 +82,10 @@ func _process(_delta):
 
 func follow_mouse():
 	global_position = get_global_mouse_position()
+
+	
+func update_position(new_position):
+	global_position = new_position
 
 var placement_area: Array[Area2D] = []
 
@@ -154,5 +163,5 @@ func remove_placement(area: Area2D):
 
 func delete_zone(zone_to_delete: Global.Directions):
 	for zone in ZONES:
-		if is_instance_valid(zone_to_delete) and zone.zone_placement == zone_to_delete:
+		if is_instance_valid(zone) and zone.zone_placement == zone_to_delete:
 			zone.queue_free()

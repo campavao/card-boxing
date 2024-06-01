@@ -1,0 +1,81 @@
+[gd_scene load_steps=8 format=3 uid="uid://bcid70m8bufso"]
+
+[ext_resource type="Script" path="res://start.gd" id="1_ih6xr"]
+
+[sub_resource type="Gradient" id="Gradient_dst3k"]
+offsets = PackedFloat32Array(0.324723, 1)
+colors = PackedColorArray(0.0666667, 0.196078, 0.14902, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_t7kjc"]
+gradient = SubResource("Gradient_dst3k")
+fill_from = Vector2(0.542735, 0.559829)
+fill_to = Vector2(0.547009, 0.854701)
+
+[sub_resource type="SystemFont" id="SystemFont_l1u81"]
+
+[sub_resource type="Theme" id="Theme_gstyx"]
+Button/font_sizes/font_size = 40
+Button/fonts/font = SubResource("SystemFont_l1u81")
+
+[sub_resource type="SystemFont" id="SystemFont_s6vvp"]
+font_names = PackedStringArray("Chilly UI")
+
+[sub_resource type="LabelSettings" id="LabelSettings_0nc38"]
+font = SubResource("SystemFont_s6vvp")
+font_size = 100
+
+[node name="Start" type="CanvasLayer"]
+script = ExtResource("1_ih6xr")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("GradientTexture2D_t7kjc")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 324.0
+offset_right = 576.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_left = -576.0
+offset_top = -324.0
+offset_right = 576.0
+offset_bottom = 324.0
+alignment = 1
+
+[node name="Start" type="Button" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_gstyx")
+text = "Start"
+flat = true
+
+[node name="Join" type="Button" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_gstyx")
+text = "Join
+"
+flat = true
+
+[node name="RichTextLabel" type="Label" parent="."]
+offset_right = 1152.0
+offset_bottom = 246.0
+theme = SubResource("Theme_gstyx")
+text = "Card Boxing"
+label_settings = SubResource("LabelSettings_0nc38")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[connection signal="pressed" from="Control/VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Control/VBoxContainer/Join" to="." method="_on_join_pressed"]

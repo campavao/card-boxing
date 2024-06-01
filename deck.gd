@@ -2,21 +2,22 @@ extends Node2D
 
 var card_scene: PackedScene = preload("res://card.tscn")
 
-@export var default_spot: Marker2D
-
-@onready var hand := $"../Hand"
+@export var default_spot: Node2D
 
 @onready var table := $"../../Table"
 
 var deck: Array[Global.CardDetails] = []
 
 func _ready():
-	reset_deck()
-	place_card(true)
-	populate_hand()
-	
-	
+	hide()
+	Events.connect('start_game', start)
+	Events.connect('populate_hand', populate_hand)
 
+func start():
+	reset_deck()
+	show()
+	default_spot = get_tree().get_current_scene().get_node('Spawn')
+	
 func _on_input_event(_viewport, event, _shape_idx):
 	if (
 		!Global.is_active_card_details
@@ -24,8 +25,8 @@ func _on_input_event(_viewport, event, _shape_idx):
 			and event.button_index == MOUSE_BUTTON_LEFT
 			and event.pressed
 		):
-		
-		place_card(false)
+		#print('clicked deck, not handled yet')
+		place_card(null)
 
 func reset_deck():
 	for suit in Global.SUIT_INDEX:
@@ -35,7 +36,8 @@ func reset_deck():
 			card.suit = suit
 			deck.append(card)
 
-func place_card(is_first_card: bool):
+func place_card(player: Player):
+	var is_first_card = default_spot.get_children().size() == 0
 	var next_card = deck.pick_random()
 	
 	if is_first_card:
@@ -44,14 +46,15 @@ func place_card(is_first_card: bool):
 		new_card.suit = next_card.suit	
 		new_card.is_placed = true
 		new_card.global_position = default_spot.global_position
+		#new_card.player = player
 		table.add_child(new_card)
 	else:
-		hand.push_card(next_card)
+		player.hand.push_card(next_card)
 	
-	var remove_card_index = deck.find(next_card)
-	deck.remove_at(remove_card_index)
+	deck.erase(next_card)
 
-func populate_hand():
+func populate_hand(player: Player):
 	for _index in 7:
 		var next_card = deck.pick_random()
-		hand.cards.append(next_card)
+		player.hand.cards.append(next_card)
+		deck.erase(next_card)

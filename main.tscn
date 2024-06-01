@@ -1,17 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://ka8u2qp71805"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_qvxj5"]
 [ext_resource type="PackedScene" uid="uid://rdaagd01p35o" path="res://deck.tscn" id="1_vdhe0"]
-[ext_resource type="Script" path="res://MouseCamera.gd" id="2_ss2sv"]
-[ext_resource type="PackedScene" uid="uid://cicgkir7ms26o" path="res://hand.tscn" id="3_8ts7g"]
+[ext_resource type="PackedScene" uid="uid://bcid70m8bufso" path="res://start.tscn" id="2_oid3n"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_qvxj5")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(577, 323)
-zoom = Vector2(1.5, 1.5)
-position_smoothing_enabled = true
-position_smoothing_speed = 0.5
-script = ExtResource("2_ss2sv")
+[node name="Start" parent="." instance=ExtResource("2_oid3n")]
 
 [node name="Table" type="Node2D" parent="."]
 
@@ -19,12 +15,35 @@ script = ExtResource("2_ss2sv")
 position = Vector2(577, 323)
 
 [node name="UI" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="Deck" parent="UI" node_paths=PackedStringArray("default_spot") instance=ExtResource("1_vdhe0")]
 position = Vector2(69, 565)
 scale = Vector2(1.5, 1.5)
 default_spot = NodePath("../../Table/FirstSpot")
 
-[node name="Hand" parent="UI" instance=ExtResource("3_8ts7g")]
-position = Vector2(196, 565)
-scale = Vector2(1.5, 1.5)
+[node name="Button" type="Button" parent="UI"]
+offset_left = 39.0
+offset_top = 418.0
+offset_right = 138.0
+offset_bottom = 458.0
+text = "Start Game"
+
+[node name="Player Count" type="Label" parent="UI"]
+offset_left = 39.0
+offset_top = 38.0
+offset_right = 156.0
+offset_bottom = 61.0
+text = "Player Count: 0"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("../Spawn")
+spawn_limit = 4
+
+[node name="Spawn" type="Node2D" parent="."]
+position = Vector2(577, 323)
+
+[connection signal="pressed" from="UI/Button" to="." method="_on_button_pressed"]
+[connection signal="child_entered_tree" from="Spawn" to="." method="_on_spawn_child_entered_tree"]
+[connection signal="child_exiting_tree" from="Spawn" to="." method="_on_spawn_child_exiting_tree"]

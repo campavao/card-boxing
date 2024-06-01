@@ -1,0 +1,25 @@
+extends MultiplayerSynchronizer
+
+@onready var player = $".."
+
+var input_direction 
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	if get_multiplayer_authority() != multiplayer.get_unique_id():
+		set_process(false)
+		set_physics_process(false)
+	
+	input_direction = get_tree().current_scene.get_global_mouse_position()
+
+func _physics_process(delta):
+	input_direction = get_tree().current_scene.get_global_mouse_position()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+@rpc("call_local")
+func jump():
+	if multiplayer.is_server():
+		player.do_jump = true
