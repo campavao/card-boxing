@@ -37,7 +37,7 @@ func become_host():
 	print('starting host')
 	Events.emit_signal('start_game')
 	
-	spawn = get_tree().get_current_scene().get_node('Spawn')
+	spawn = get_tree().get_current_scene().get_node('Players/Spawn')
 	
 	var server_peer = ENetMultiplayerPeer.new()
 	server_peer.create_server(PORT)

@@ -1,6 +1,8 @@
 extends Node2D
 class_name Card
 
+var card_scene = preload("res://card.tscn")
+
 @onready var Face := $Face
 @onready var Zone1 := $Zones/CardZone1
 @onready var Zone2 := $Zones/CardZone2
@@ -63,25 +65,23 @@ func update_face():
 var selected = false
 
 func _physics_process(delta):
-	if multiplayer.is_server():
+	if selected:
 		move()
-		
-func move():
-	if player and player.is_selected:
-		var active_card_details = Global.CardDetails.new()
-		active_card_details.number = number
-		active_card_details.suit = suit
-		Global.active_card_details = active_card_details
-		
-		if !is_placed:
-			follow_mouse()
-		
+	
 	if is_placed and is_any_disabled():
 		enable_all()
 		
+func move():
+	var active_card_details = Global.CardDetails.new()
+	active_card_details.number = number
+	active_card_details.suit = suit
+	Global.active_card_details = active_card_details
+	
+	if !is_placed:
+		follow_mouse()
 
 func follow_mouse():
-	global_position = get_global_mouse_position()
+	global_position = player.mouse_position
 
 	
 func update_position(new_position):
@@ -123,23 +123,38 @@ func place():
 	var is_valid_placement = can_place()
 
 	if first_area and is_valid_placement:
-		reparent(table)
-		global_position = first_area.global_position
-		global_rotation = first_area.global_rotation
-		scale = Vector2(1, 1)
+		update_card_position.rpc(
+			first_area.global_position, 
+			first_area.global_rotation, 
+			first_area.zone_placement,
+			number, 
+			suit
+		)
+			
+		first_area.parent.delete_zone(self, first_area.zone_placement)
 		connected = [first_area.parent]
-		
-		var zone_to_delete = Global.DIRECTION_MAP[first_area.zone_placement]
-		delete_zone(zone_to_delete)
-		first_area.parent.delete_zone(first_area.zone_placement)
-		
-		is_placed = true
-		Global.is_active_card_details = false
-		
 		first_area.queue_free()
 		emit_signal('remove_card', self)
+		
 	else:
 		global_position = previous_location
+
+@rpc("any_peer", "call_local", "reliable")
+func update_card_position(pos, rot,  zone, new_number, new_suit):
+	var card = card_scene.instantiate()
+	card.number = new_number
+	card.suit = new_suit
+	card.global_position = pos
+	card.global_rotation = rot
+	card.scale = Vector2(1, 1)
+	card.is_placed = true
+	table.add_child(card, true)
+	
+	var zone_to_delete = Global.DIRECTION_MAP[zone]
+	delete_zone(card, zone_to_delete)
+	
+	is_placed = true
+	Global.is_active_card_details = false
 	
 func is_valid(area: CardZone):
 	return !area.is_base and area.is_match 
@@ -152,7 +167,7 @@ func print_card_details(area: CardZone):
 		"number": area.parent.number,
 		"suit": area.parent.suit
 	}
-	
+
 func add_placement(area: Area2D):
 	if area is CardZone and !area.is_base and !area.is_disabled:
 		placement_area.append(area)
@@ -161,7 +176,8 @@ func remove_placement(area: Area2D):
 	placement_area.erase(area)
 
 
-func delete_zone(zone_to_delete: Global.Directions):
-	for zone in ZONES:
+func delete_zone(card: Card, zone_to_delete: Global.Directions):
+	for zone in card.ZONES:
 		if is_instance_valid(zone) and zone.zone_placement == zone_to_delete:
+			print('deleting zone %s' % zone_to_delete)
 			zone.queue_free()

@@ -83,7 +83,7 @@ func _on_overlap_zone_area_entered(area):
 			area.other_parents.append(parent)
 			if other_parents.size() > 0 and area.other_parents.size() > 0:
 				area.other_parents.append_array(other_parents)
-				
+			print('base entered. I am %s' % zone_placement)
 			queue_free()
 
 func _on_mouse_entered():

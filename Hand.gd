@@ -43,8 +43,9 @@ func reshuffle():
 
 func _on_remove_card(card: Card):
 	var found_card = find_card(card)
-	cards.erase(found_card)
-	reshuffle()
+	if found_card:
+		cards.erase(found_card)
+		reshuffle()
 
 		
 func find_card(to_find: Card):
