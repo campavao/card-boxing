@@ -10,9 +10,10 @@ func _on_button_pressed():
 func hide_start():
 	Events.emit_signal('start_game')
 	$"UI/Button".hide()
+	#$UI/Deck.populate_hands()
+	Events.emit_signal('populate_hand')
 	
-	for child in %Spawn.get_children():
-		Events.emit_signal('populate_hand', child)
+	GameManager.init_score()
 
 func _on_spawn_child_entered_tree(node):
 	if node is Player:

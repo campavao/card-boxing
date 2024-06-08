@@ -10,11 +10,12 @@ var cards: Array[Global.CardDetails] = []
 
 var previous_hand_size = 0
 
-func _process(_delta):
-	var hand_size = cards.size()
-	if hand_size > 0 and hand_size != previous_hand_size:
-		show_cards()
-		previous_hand_size = hand_size
+#func _process(_delta):
+	#var hand_size = cards.size()
+	#if hand_size > 0 and hand_size != previous_hand_size:
+		#Global.print('actually in here')
+		#show_cards()
+		#previous_hand_size = hand_size
 
 
 func show_cards():
@@ -42,10 +43,8 @@ func reshuffle():
 	show_cards()
 
 func _on_remove_card(card: Card):
-	Global.print('finding %s' % Global.get_number_name(card.number))
 	var found_card = find_card(card)
 	if found_card:
-		Global.print('erasing %s' % found_card)
 		cards.erase(found_card)
 		reshuffle()
 

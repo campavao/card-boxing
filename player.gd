@@ -28,7 +28,6 @@ func _physics_process(delta):
 	mouse_position = %InputSync.mouse_position
 	
 	if GameManager.active_player_id == player_id:
-		#Global.print(GameManager.active_player_id)
 		if " - Your turn" not in id_label.text:
 			id_label.text += " - Your turn"
 	elif " - Your turn" in id_label.text:

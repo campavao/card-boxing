@@ -38,7 +38,15 @@ offset_right = 156.0
 offset_bottom = 61.0
 text = "Player Count: 0"
 
+[node name="Score" type="Label" parent="UI"]
+offset_left = 39.0
+offset_top = 73.0
+offset_right = 156.0
+offset_bottom = 96.0
+text = "Score:"
+
 [node name="Players" type="Node2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Players"]
 _spawnable_scenes = PackedStringArray("res://player.tscn")

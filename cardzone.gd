@@ -79,13 +79,12 @@ func is_parent_valid(parent_to_check):
 func _on_overlap_zone_area_entered(area):
 	if area is CardZone:
 		if area.is_base:
-			Global.print('base found')
 			queue_free()
 		elif area != self and area.parent.is_placed:
 			area.other_parents.append(parent)
 			if other_parents.size() > 0 and area.other_parents.size() > 0:
 				area.other_parents.append_array(other_parents)
-			Global.print('base entered. I am %s' % zone_placement)
+
 			#queue_free()
 
 func _on_mouse_entered():

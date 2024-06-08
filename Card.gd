@@ -4,16 +4,12 @@ class_name Card
 var card_scene = preload("res://card.tscn")
 
 @onready var Face := $Face
-#@onready var Zone1 := $Zones/SouthZone
-#@onready var Zone2 := $Zones/WestZone
-#@onready var Zone3 := $Zones/NorthZone
-#@onready var Zone4 := $Zones/EastZone
 
 var table
 
 var ZONES: Array[Node] = []
 
-var is_placed = false
+@export var is_placed = false
 
 # Ace to King
 @export var number: Global.Numbers
@@ -21,8 +17,6 @@ var is_placed = false
 @export var player: Player
 
 signal remove_card(card: Card)
-
-var connected: Array[Card]
 
 var previous_location: Vector2
 
