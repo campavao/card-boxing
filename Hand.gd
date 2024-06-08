@@ -30,7 +30,7 @@ func render_card(card: Global.CardDetails, start: float = 0):
 	addable_card.position.x = start
 	addable_card.player = player
 	addable_card.connect("remove_card", _on_remove_card)
-	%Path.add_child(addable_card)
+	%Path.add_child(addable_card, true)
 
 func push_card(card: Global.CardDetails):
 	cards.append(card)
@@ -42,8 +42,10 @@ func reshuffle():
 	show_cards()
 
 func _on_remove_card(card: Card):
+	Global.print('finding %s' % Global.get_number_name(card.number))
 	var found_card = find_card(card)
 	if found_card:
+		Global.print('erasing %s' % found_card)
 		cards.erase(found_card)
 		reshuffle()
 

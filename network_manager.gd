@@ -13,7 +13,7 @@ var is_server = false
 
 # Handle new peer connection
 func _on_peer_connected(id: int):
-	print("New peer connected: %d" % id)
+	Global.print("New peer connected: %d" % id)
 	
 	var player_to_add = player.instantiate()
 	player_to_add.player_id = id
@@ -24,7 +24,7 @@ func _on_peer_connected(id: int):
 
 # Handle disconnection
 func _on_peer_disconnected(id: int):
-	print("Peer disconnected: %d" % id)
+	Global.print("Peer disconnected: %d" % id)
 	if not spawn.has_node(str(id)):
 		return
 	spawn.get_node(str(id)).queue_free()
@@ -34,7 +34,7 @@ func remove_single_player():
 	player_to_remove.queue_free()
 	
 func become_host():
-	print('starting host')
+	Global.print('starting host')
 	Events.emit_signal('start_game')
 	
 	spawn = get_tree().get_current_scene().get_node('Players/Spawn')
@@ -48,17 +48,18 @@ func become_host():
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 	
-	print('becoming host again?')
+	Global.print('becoming host again?')
 	_on_peer_connected(1)
 
 
 	
 func join_game():
-	print('joining')
+	Global.print('joining')
 	
 	var client_peer = ENetMultiplayerPeer.new()
 	client_peer.create_client(SERVER_IP, PORT)
 	
 	multiplayer.multiplayer_peer = client_peer
+	
 	
 	

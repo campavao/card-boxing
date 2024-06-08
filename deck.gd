@@ -2,8 +2,6 @@ extends Node2D
 
 var card_scene: PackedScene = preload("res://card.tscn")
 
-@export var default_spot: Marker2D
-
 @onready var table := $"../../Table"
 
 var deck: Array[Global.CardDetails] = []
@@ -37,30 +35,20 @@ func reset_deck():
 
 
 func click_deck():
-	var is_first_card = default_spot.get_children().size() == 0
+	var player = GameManager.get_active_player()
+	if player.player_id != multiplayer.get_unique_id():
+		return
+	var is_first_card = table.is_empty
 	var next_card = deck.pick_random()
-	var player = get_active_player()
 	
 	if is_first_card:
-		place_card.rpc(next_card.number, next_card.suit)
+		GameManager.place_card.rpc(table.first_spot.global_position, 0, next_card.number, next_card.suit, null, null)
 	else:
 		player.hand.push_card(next_card)
 	
+	GameManager.next_active_player.rpc()
 	deck.erase(next_card)
 
-@rpc("any_peer", "call_local", "reliable")
-func place_card(number, suit):
-	var new_card = card_scene.instantiate()
-	new_card.number = number
-	new_card.suit = suit	
-	new_card.is_placed = true
-	new_card.global_position = default_spot.global_position
-	default_spot.add_child(new_card)
-	
-func get_active_player():
-	for child in %Spawn.get_children():
-		if child.name == str(%GameManager.active_player_id):
-			return child
 
 func _on_populate_hand(player: Player):
 	for _index in 7:

@@ -3,6 +3,7 @@ class_name CardZone
 
 const Directions = Global.Directions
 
+
 @export var is_base := false
 @export var is_disabled := false
 @export var zone_placement: Directions = Directions.North
@@ -20,6 +21,7 @@ func _ready():
 	var possible_parent = get_parent().get_parent()
 	if possible_parent is Card:
 		parent = possible_parent
+	name = parent.name + "_" + name
 
 func _process(_delta):
 	hide_border = is_base or is_disabled
@@ -77,14 +79,14 @@ func is_parent_valid(parent_to_check):
 func _on_overlap_zone_area_entered(area):
 	if area is CardZone:
 		if area.is_base:
-			print('base found')
+			Global.print('base found')
 			queue_free()
 		elif area != self and area.parent.is_placed:
 			area.other_parents.append(parent)
 			if other_parents.size() > 0 and area.other_parents.size() > 0:
 				area.other_parents.append_array(other_parents)
-			print('base entered. I am %s' % zone_placement)
-			queue_free()
+			Global.print('base entered. I am %s' % zone_placement)
+			#queue_free()
 
 func _on_mouse_entered():
 	highlight()

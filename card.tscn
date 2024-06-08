@@ -24,21 +24,21 @@ collision_mask = 2
 is_base = true
 is_disabled = false
 
-[node name="CardZone1" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="SouthZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(-9, 49)
 rotation = 1.5708
 zone_placement = 1
 
-[node name="CardZone2" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="WestZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(-49, -9)
 rotation = 1.5708
 zone_placement = 3
 
-[node name="CardZone3" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="NorthZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(9, -49)
 rotation = 1.5708
 
-[node name="CardZone4" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="EastZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(49, 9)
 rotation = 1.5708
 zone_placement = 2
