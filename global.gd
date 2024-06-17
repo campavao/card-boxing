@@ -7,6 +7,9 @@ enum Suits {
 	spades,
 }
 
+func get_suit_name(suit: Suits):
+	return Suits.keys()[suit]
+
 enum Numbers {
 	Ace,
 	Two,
@@ -23,6 +26,9 @@ enum Numbers {
 	King,
 	Joker
 }
+
+func get_number_name(number: Numbers):
+	return Numbers.keys()[number]
 
 const NUMBER_INDEX = [
 	Numbers.Ace,
@@ -74,3 +80,9 @@ var active_card_details: CardDetails = null
 var active_card: Card = null
 
 const CARD_ZONE_COLLISION_LAYER = 9
+
+func print(message):
+	print('---------------------')
+	print('client %s' % multiplayer.get_unique_id())
+	print(message)
+

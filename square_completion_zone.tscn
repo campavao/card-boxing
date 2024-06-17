@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu8xvkit45pet"]
+
+[ext_resource type="Script" path="res://square_completion_zone.gd" id="1_yeqqw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lr4lo"]
+size = Vector2(16, 16)
+
+[node name="SquareCompletionZone" type="Area2D"]
+collision_layer = 524288
+collision_mask = 524288
+script = ExtResource("1_yeqqw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_lr4lo")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

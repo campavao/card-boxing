@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://c38vwmsn6gnde"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_7elir"]
+[ext_resource type="Script" path="res://multiplayer_input.gd" id="2_01rop"]
+[ext_resource type="PackedScene" uid="uid://cicgkir7ms26o" path="res://hand.tscn" id="3_o7nny"]
+[ext_resource type="Script" path="res://MouseCamera.gd" id="4_33lud"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7bpmy"]
+properties/0/path = NodePath(".:player_id")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:mouse_position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qhcrg"]
+properties/0/path = NodePath("InputSync:mouse_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_7elir")
+
+[node name="PlayerSync" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_7bpmy")
+
+[node name="InputSync" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+replication_config = SubResource("SceneReplicationConfig_qhcrg")
+script = ExtResource("2_01rop")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Hand" parent="UI" instance=ExtResource("3_o7nny")]
+position = Vector2(196, 565)
+scale = Vector2(1.5, 1.5)
+
+[node name="Player" type="Label" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.17
+anchor_top = 0.758
+anchor_right = 0.213
+anchor_bottom = 0.793
+offset_left = 0.160004
+offset_top = -0.184021
+offset_right = -9.37602
+offset_bottom = 0.135986
+text = "Player"
+
+[node name="ID" type="Label" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.17
+anchor_top = 0.758
+anchor_right = 0.213
+anchor_bottom = 0.793
+offset_left = 54.16
+offset_top = -0.184021
+offset_right = 53.624
+offset_bottom = 0.135986
+text = "1"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(577, 323)
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 0.5
+script = ExtResource("4_33lud")

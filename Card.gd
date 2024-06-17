@@ -1,25 +1,22 @@
 extends Node2D
 class_name Card
 
+var card_scene = preload("res://card.tscn")
+
 @onready var Face := $Face
-@onready var Zone1 := $Zones/CardZone1
-@onready var Zone2 := $Zones/CardZone2
-@onready var Zone3 := $Zones/CardZone3
-@onready var Zone4 := $Zones/CardZone4
 
 var table
 
-@onready var ZONES: Array[CardZone] = [Zone1, Zone2, Zone3, Zone4]
+var ZONES: Array[Node] = []
 
-var is_placed = false
+@export var is_placed = false
 
 # Ace to King
 @export var number: Global.Numbers
 @export var suit: Global.Suits
+@export var player: Player
 
 signal remove_card(card: Card)
-
-var connected: Array[Card]
 
 var previous_location: Vector2
 
@@ -35,6 +32,8 @@ func _ready():
 	table = get_tree().current_scene.find_child('Table')
 	Events.connect("add_placement_area", add_placement)
 	Events.connect("remove_placement_area", remove_placement)
+	name = Global.get_number_name(number) + "_" + Global.get_suit_name(suit)
+	ZONES = get_node('Zones').get_children() 
 	
 func update_face():
 	if (number == Global.Numbers.Joker):
@@ -61,22 +60,28 @@ func update_face():
 
 var selected = false
 
-func _process(_delta):
+func _physics_process(delta):
 	if selected:
-		var active_card_details = Global.CardDetails.new()
-		active_card_details.number = number
-		active_card_details.suit = suit
-		Global.active_card_details = active_card_details
-		
-		if !is_placed:
-			follow_mouse()
-		
+		move()
+	
 	if is_placed and is_any_disabled():
 		enable_all()
 		
+func move():
+	var active_card_details = Global.CardDetails.new()
+	active_card_details.number = number
+	active_card_details.suit = suit
+	Global.active_card_details = active_card_details
+	
+	if !is_placed:
+		follow_mouse()
 
 func follow_mouse():
-	global_position = get_global_mouse_position()
+	global_position = player.mouse_position
+
+	
+func update_position(new_position):
+	global_position = new_position
 
 var placement_area: Array[Area2D] = []
 
@@ -110,27 +115,31 @@ func is_disabled(zone):
 	return is_instance_valid(zone) and zone.is_disabled
 
 func place():
+	if GameManager.get_active_player().player_id != multiplayer.get_unique_id():
+		return
+		
 	var first_area = placement_area[0]
 	var is_valid_placement = can_place()
 
 	if first_area and is_valid_placement:
-		reparent(table)
-		global_position = first_area.global_position
-		global_rotation = first_area.global_rotation
-		scale = Vector2(1, 1)
-		connected = [first_area.parent]
+		GameManager.place_card.rpc(
+			first_area.global_position,
+			first_area.global_rotation, 
+			number, 
+			suit,
+			first_area.zone_placement,
+			first_area.parent.name
+		)
 		
-		var zone_to_delete = Global.DIRECTION_MAP[first_area.zone_placement]
-		delete_zone(zone_to_delete)
-		first_area.parent.delete_zone(first_area.zone_placement)
-		
-		is_placed = true
-		Global.is_active_card_details = false
-		
+		GameManager.delete_zone(self, first_area.zone_placement)
+
 		first_area.queue_free()
 		emit_signal('remove_card', self)
+		queue_free()
+		
 	else:
 		global_position = previous_location
+
 	
 func is_valid(area: CardZone):
 	return !area.is_base and area.is_match 
@@ -143,7 +152,7 @@ func print_card_details(area: CardZone):
 		"number": area.parent.number,
 		"suit": area.parent.suit
 	}
-	
+
 func add_placement(area: Area2D):
 	if area is CardZone and !area.is_base and !area.is_disabled:
 		placement_area.append(area)
@@ -151,8 +160,3 @@ func add_placement(area: Area2D):
 func remove_placement(area: Area2D):
 	placement_area.erase(area)
 
-
-func delete_zone(zone_to_delete: Global.Directions):
-	for zone in ZONES:
-		if is_instance_valid(zone_to_delete) and zone.zone_placement == zone_to_delete:
-			zone.queue_free()

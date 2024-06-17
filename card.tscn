@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dyy1kt4ukd3d8"]
+[gd_scene load_steps=5 format=3 uid="uid://dyy1kt4ukd3d8"]
 
 [ext_resource type="Script" path="res://Card.gd" id="1_7c8dw"]
 [ext_resource type="Texture2D" uid="uid://bavp18ewuwhht" path="res://cardsLarge_tilemap.png" id="2_50c3l"]
 [ext_resource type="PackedScene" uid="uid://ctgdpr6jj43nl" path="res://cardzone.tscn" id="3_4uti3"]
+[ext_resource type="PackedScene" uid="uid://cu8xvkit45pet" path="res://square_completion_zone.tscn" id="4_3qo42"]
 
 [node name="Card" type="Node2D"]
 visibility_layer = 3
@@ -24,24 +25,30 @@ collision_mask = 2
 is_base = true
 is_disabled = false
 
-[node name="CardZone1" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="SouthZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(-9, 49)
 rotation = 1.5708
 zone_placement = 1
 
-[node name="CardZone2" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="WestZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(-49, -9)
 rotation = 1.5708
 zone_placement = 3
 
-[node name="CardZone3" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="NorthZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(9, -49)
 rotation = 1.5708
 
-[node name="CardZone4" parent="Zones" instance=ExtResource("3_4uti3")]
+[node name="EastZone" parent="Zones" instance=ExtResource("3_4uti3")]
 position = Vector2(49, 9)
 rotation = 1.5708
 zone_placement = 2
+
+[node name="SquareCompletionZone1" parent="Zones" instance=ExtResource("4_3qo42")]
+position = Vector2(-39, 12)
+
+[node name="SquareCompletionZone2" parent="Zones" instance=ExtResource("4_3qo42")]
+position = Vector2(22, -28)
 
 [connection signal="area_entered" from="Zones/BaseZone" to="." method="_on_base_zone_area_entered"]
 [connection signal="area_exited" from="Zones/BaseZone" to="." method="_on_base_zone_area_exited"]
